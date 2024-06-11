@@ -1,0 +1,131 @@
+body{
+    background-color: white;
+}
+.backArrow {
+    background-color: transparent;
+
+}
+.wsBody {
+    display: flex;
+    position: fixed;
+    left: 0cm;
+}
+.wsStack {
+    position: fixed;
+    top: 0;
+    display: none;
+    flex-direction: column;
+    left: 0cm;
+    background-color: white;
+    gap: 1cm;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.wsContent{
+    position: relative;
+    padding: 1cm;
+    background-color: rgb(234, 234, 234);
+    border-radius: 0.08cm;
+    border-width: 0.01cm;
+    border-style: solid;
+    display: flex;
+    flex-direction: row;
+}
+.stackHeader {
+    display: flex;
+    position: relative;
+    top: 0;
+    width:-webkit-fill-available;
+    height: 40px;
+}
+.wsBodyStackInnerContent {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: -webkit-fill-available ;
+    margin: 1cm;
+    left: 0cm;
+    height: fit-content;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+.infoForm {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1cm;
+    padding: 1cm;
+    border-style: ridge;
+    border-width: 0.01cm;
+    border-radius: 0.01cm;
+}
+.inputsAndControlsForm {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 1cm;
+    padding: 1cm;
+    border-style: ridge;
+    border-width: 0.01cm;
+    border-radius: 0.01cm;
+}
+.constrolsHolder {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+}
+input {
+    display: flex;
+    position: relative;
+    width: -webkit-fill-available;
+    height: 0.8cm;
+    border-radius: 0.1cm;
+    border-width: 0.01cm;
+    padding: 0.3cm;
+    color: black;
+    font-size: larger;
+    font-weight: 200;
+    
+}
+.nextBtn {
+    background-color: green;
+    border-style: none;
+    border-radius: 0.1cm;
+    color:white;
+    width: -webkit-fill-available;
+    width: fit-content;
+    height: 0.7cm;
+    padding: 0.1cm;
+}
+.nextBtn:hover {
+    cursor: pointer;
+}
+.createAccount {
+    background-color: transparent;
+    border-style: none;
+    border-radius: 0.1cm;
+    color:blue;
+    width: -webkit-fill-available;
+    width: fit-content;
+    height: 0.7cm;
+    padding: 0.1cm;
+}
+.createAccount:hover{
+    cursor: pointer;
+}
+a{
+    color: green;
+}
+.notificationLabel {
+    position: fixed;
+    width: fit-content;
+    height: auto;
+    top: 0;
+    
+}
+img{
+    width: 20px;
+    height: 20px;
+}

@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1715223730 source:c:\xampp\htdocs\api\v1.0\modules\twostepauthenication\2fa\main.cpp
+	<iostream>
+	<stdexcept>
+

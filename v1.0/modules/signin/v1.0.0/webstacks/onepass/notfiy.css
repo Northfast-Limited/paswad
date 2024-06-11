@@ -1,0 +1,47 @@
+#notifications-container {
+    position: fixed;
+    top: 10px; /* Position notifications 10px from the top */
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    z-index: 3;
+    pointer-events: auto;
+}
+
+.notification {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    background:white;
+    border-radius: 12px;
+    padding: 0px;
+    border-color: rgb(184, 184, 184);
+    border-style: solid;
+    border-width: 0.01cm;
+    opacity: 0;
+    transform: translateY(-100%); /* Start above the view */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    margin-top:0px; /* Adjust to create a stack effect */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0); /* Move into view */
+    transition-delay: 0s; /* Remove delay for instant stacking */
+}
+
+.notification-icon {
+    margin-right: 16px;
+    font-size: 24px;
+}
+
+.notification-text {
+    flex-grow: 1;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+}

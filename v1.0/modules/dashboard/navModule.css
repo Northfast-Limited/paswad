@@ -1,0 +1,180 @@
+
+
+li {
+    position: relative;
+    margin: 0cm;
+
+ 
+  width: fit-content;
+   padding: 0.2cm;
+    /* background-color: rgb(115, 126, 126); */
+}
+
+p {
+    position: relative;
+  z-index: 2;
+}
+.topLev  {
+    position: relative;
+/* background-color: bisque; */
+    display: flex;
+    padding: 0%;
+    margin: 0cm;
+   height: fit-content;
+   background-color: transparent;
+   width: fit-content;
+    justify-content: center;
+    list-style: none;
+
+   
+    
+}
+.topLev:hover{
+cursor: pointer;
+}
+.navigation  {
+    width: fit-content;
+    position: relative;
+    display: flex;
+   background-color: transparent;
+    list-style: none;
+    margin: 0;
+    padding: 0cm;
+
+
+}
+
+
+.dropdown {
+    display: none;
+    opacity: 0;
+
+    
+}
+.dropdown>* {
+  flex: 1 1 160px;
+}
+.trigger-enter .dropdown {
+    display: flex;
+    flex-direction: column;
+   flex-wrap: wrap;
+    position: absolute;
+    z-index: 1;
+    padding: 0cm;
+    margin: 0.1cm;
+    background-color: transparent;
+    width: fit-content;
+    height: fit-content;
+    
+}
+.trigger-active .dropdown {
+    opacity: 1;
+    transition: all 0.5s ease-in-out;
+}
+
+/* price */
+.sy {
+    position: relative;
+    justify-content: center;
+}
+
+
+
+/* scroll */
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: red; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+  /* nav arrow */
+  /* .navArrow {
+    display: flex;
+    position: absolute;
+    top: 0.2cm;
+    width: 1cm;
+    height: 1cm;
+    background-color: white;
+    border-style: solid;
+    border-color: rgb(58, 56, 52);
+    border-radius: 100%;
+    border-top-right-radius: 0.5cm;
+    transform: rotate(320deg);
+    margin-left: 0.4cm;
+  } */
+  .backgroundForm{
+    display: none;
+    opacity: 0;
+ 
+}
+ .tgin {
+display: flex;
+position: absolute;
+padding: 0cm;
+margin: 0cm;
+background-color: white;
+border-radius: 0.1cm;
+box-shadow: 0cm 0cm 0.3cm 0cm rgb(0, 0, 0);
+      }
+      .tga {
+        opacity: 1;
+        z-index: 1;
+        transition: all 0.3s ease-in-out;
+       
+              }
+.pol {
+    display: flex;
+    opacity: 1;
+    color-scheme: dark;
+    accent-color: blue;
+    padding: 0cm;
+    margin: 0cm;
+    background-color: white;
+    border-radius: 0.1cm;
+    box-shadow: 0cm 0cm 0.3cm 0cm rgb(0, 0, 0);
+    z-index: 1;
+}
+.arrow {
+    position: absolute;
+    width: 0cm;
+    height:0cm;
+    top: 0cm;
+    border-width: 0.3cm;
+    border-radius: 0cm;
+    border-bottom-right-radius: 0.1cm;
+    border-style: solid;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: white;
+    border-bottom-color: white;
+    z-index: -1;
+    transform: rotate(-135deg);
+  }
+
+.arrowTest {
+   position: relative;
+   width: 0cm;
+   height:0cm;
+   border-bottom: 1cm;
+   border-left: 1cm;
+   border-right: 1cm;
+   border-top: 1cm;
+   border-radius: 0cm;
+   border-bottom-right-radius: 0.2cm;
+   border-style: solid;
+   border-top-color: transparent;
+   border-left-color: transparent;
+   border-right-color: black;
+   border-bottom-color: black;
+   transform: rotate(-135deg);
+ }
