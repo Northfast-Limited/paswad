@@ -3,7 +3,7 @@
 // process final login process //queries the system config for features
 header("Content-Type: application/json");
 include_once "./fe/fe.php";
-//swift login process
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $ip = $_SERVER['SERVER_ADDR'];
     $domain =$_SERVER['SERVER_NAME'];

@@ -3,7 +3,6 @@ header("Content-Type: application/json");
 include_once "v1.0/checkClientDetails/frontend.php";
 include_once "urlc/front.php";
 include_once "../auth/index.php";
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $ip = $_SERVER['SERVER_ADDR'];
     $domain =$_SERVER['SERVER_NAME'];

@@ -1,5 +1,5 @@
-import loginCaller from "./pages/login.js";
-import registrationCaller from "./pages/registration.js";
+// import loginCaller from "./pages/login.js";
+// import registrationCaller from "./pages/registration.js";
 const stackOpener = document.getElementById("stackOpener");
 const   registration = document.getElementById("registration");
 
@@ -10,6 +10,6 @@ window.addEventListener("load", (event) => {
 
   });
 
-  stackOpener.addEventListener("click", loginCaller);
-  registration.addEventListener("click", registrationCaller);
+//   stackOpener.addEventListener("click", loginCaller);
+//   registration.addEventListener("click", registrationCaller);
 

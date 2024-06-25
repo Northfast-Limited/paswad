@@ -1,35 +1,84 @@
-body{
-    background-color: white;
-}
 .backArrow {
     background-color: transparent;
 
 }
-.wsBody {
-    display: flex;
-    position: fixed;
-    left: 0cm;
-}
-.wsStack {
-    position: fixed;
-    top: 0;
-    display: none;
-    flex-direction: column;
-    left: 0cm;
-    background-color: white;
-    gap: 1cm;
-    overflow-y: hidden;
-    overflow-x: hidden;
-}
-.wsContent{
-    position: relative;
-    padding: 1cm;
-    background-color: rgb(234, 234, 234);
-    border-radius: 0.08cm;
-    border-width: 0.01cm;
-    border-style: solid;
+.logoHolder {
     display: flex;
     flex-direction: row;
+    background-color: white;
+    padding: 0.1cm;
+    gap: 0.3cm;
+    border-radius: 0.1cm;
+  }
+  .lg1 {
+    border-radius: 100%;
+    background-color: red;
+    width: 0.3cm;
+    height: 0.3cm;
+  }
+  .lg2 {
+    border-radius: 100%;
+    background-color: black;
+    width: 0.3cm;
+    height: 0.3cm;
+  }
+  .lg3 {
+    border-radius: 100%;
+    background-color: green;
+    width: 0.3cm;
+    height: 0.3cm;
+  }
+.wsBody {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0cm;
+    margin: 0cm;
+    border-style: none;
+    border-radius: 0.4cm;
+    width: fit-content;
+    position: relative;
+    flex-direction: column;
+    left: 0cm;
+    z-index: 1;
+}
+.wsStack {
+    display: none;
+    position: relative;
+    flex-wrap: wrap;
+    padding: 0cm;
+    background-color: rgb(35, 35, 35);
+    color: white;
+    border-radius: 0.08cm;
+    border-width: 0.01cm;
+    border-style: none;
+    flex-direction: row;
+}
+
+.topBar {
+ display: flex;
+  position: relative;
+  color: mintcream;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  height: 0.7cm;
+  font-size: x-large;
+  text-align: center;
+  width:auto;
+}
+.wsContent{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 1cm;
+    gap: 1cm;
+    background-color: rgb(71 71 71);
+    color: white;
+    border-bottom-right-radius: 0.4cm;
+    border-bottom-left-radius: 0.4cm;
+    border-width: 0.01cm;
+    border-style: none;
 }
 .stackHeader {
     display: flex;
@@ -53,21 +102,22 @@ body{
     display: flex;
     position: relative;
     flex-direction: column;
+    color: mintcream;
     flex-wrap: wrap;
-    gap: 1cm;
-    padding: 1cm;
-    border-style: ridge;
+    gap: 0cm;
+    padding: 0cm;
+    border-style: none;
     border-width: 0.01cm;
     border-radius: 0.01cm;
 }
-.inputsAndControlsForm {
+.wsInputsForm {
     display: flex;
     position: relative;
     flex-direction: column;
     flex-wrap: wrap;
     gap: 1cm;
-    padding: 1cm;
-    border-style: ridge;
+    padding: 0cm;
+    border-style: none;
     border-width: 0.01cm;
     border-radius: 0.01cm;
 }
@@ -79,25 +129,43 @@ body{
 input {
     display: flex;
     position: relative;
-    width: -webkit-fill-available;
-    height: 0.8cm;
+    width: auto;
+    height: 0.9cm;
     border-radius: 0.1cm;
     border-width: 0.01cm;
-    padding: 0.3cm;
-    color: black;
+    padding: 0cm;
+    border-style: solid;
+    border-width: 0.02cm;
+    color: darkgreen;
     font-size: larger;
     font-weight: 200;
+    text-align: center;
+    justify-content: center;
     
 }
+input:hover{
+    border-color: green;
+}
+input:active{
+    border-color: red;
+}
+input::placeholder{
+    text-align: center;
+}
+input:focus{
+    border-color: green;
+}
 .nextBtn {
-    background-color: green;
+    background-color: red;
     border-style: none;
     border-radius: 0.1cm;
     color:white;
     width: -webkit-fill-available;
     width: fit-content;
     height: 0.7cm;
-    padding: 0.1cm;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5cm;
 }
 .nextBtn:hover {
     cursor: pointer;
@@ -106,9 +174,10 @@ input {
     background-color: transparent;
     border-style: none;
     border-radius: 0.1cm;
-    color:blue;
+    color:white;
     width: -webkit-fill-available;
     width: fit-content;
+    text-align: center;
     height: 0.7cm;
     padding: 0.1cm;
 }
@@ -128,4 +197,38 @@ a{
 img{
     width: 20px;
     height: 20px;
+}
+.wsContentMaincontainer{
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    flex-direction: row;
+    width: auto;
+    height: auto;
+    gap: 1cm;
+    padding: 0cm;
+    justify-content: space-between;
+    align-items: center;
+}
+.wsContentControlsHolder{
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+button{
+    background: forestgreen;
+    border-style: none;
+    border-radius: 0.1cm;
+    width: 4cm;
+    height: 0.8cm;
+    padding: 0cm;
+    color: white;
+    font-style: normal;
+    font-weight: bolder;
+}
+button:hover{
+    cursor: pointer;
+    
 }

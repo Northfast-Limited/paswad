@@ -1,6 +1,6 @@
 //one loader ,one caller
 const message = document.getElementById("message");
-const apiUrl = 'http://local.muslih.tech/api/v1.0/f/fiac/account/getAccountInformation/';
+const apiUrl = 'http://172.31.105.163/auth/onepass/v1.0/f/fiac/account/getAccountInformation/';
 //data for api
 var auth = 'auth';
  function apiHandler(emailValue){

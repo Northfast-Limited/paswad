@@ -5,8 +5,9 @@ header('Content-Type: application/json; charset=utf-8');
  //otherwise restricted json response
 //pureConfiguration
 class db_config {
-    public $host = 'localhost';
+    public $host = '171.31.96.1';
     public $database = 'api';
     public $username = 'muslih';
     public $password = '0';
 }
+

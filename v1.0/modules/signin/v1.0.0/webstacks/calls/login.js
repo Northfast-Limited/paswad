@@ -2,15 +2,12 @@
 //next button event tracker 
 //check account first
 //btn temporary data
-import {stack}  from "../onepass/webStacks.js";
+import {bottomsheet}  from "../onepass/bottomsheet/index.js";
 const message = document.getElementById("message");
-const apiUrl = 'https://local.muslih.tech/api/v1.0/modules/signin/v1.0.0/';
+const apiUrl = 'http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/';
 //data for api
 
 // api for account check 
-
-
-
 //end of notification implimentation
 
  function apiHandler(accountnumber){
@@ -41,7 +38,8 @@ const apiUrl = 'https://local.muslih.tech/api/v1.0/modules/signin/v1.0.0/';
 
             if(data.response.responseCode == 1){
               //the payload includes a link with generated token to retrieve password field
-              stack(data);
+              //long bottomsheet instead of stack for quick developement
+              bottomsheet(data);
               notificationLabel.style.color = 'green';
               notificationLabel.innerHTML = data['response'];
             }else if(data.response.responseCode == 0){

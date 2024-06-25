@@ -4,85 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="core.css">
-    <link rel="stylesheet" href="i.scss">
-    <title>auto</title>
+    <link rel="stylesheet" href="bottomsheet-modal/styles.css">
+    <link rel="stylesheet" href="profileBox/profileBox.css">
+    <title>dashboard</title>
     
 </head>
 <body>
-
+<div class="main-window" id="main">
+    
 <div class="wsBody" id="wsBody">
+<!-- Rounded switch -->
 
-       <div class="wsBodyHeader" id='wsBodyHeader'>
-            <div class="accountsettings"> 
-           
-             <div class="profileimageHolder"><img title="profile" src="./res/user.png" alt="profile" srcset=""></div>
-             <div class="accountnameHolder"><svg id="spinner" version="1.1" id="L4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-  viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
-  <circle fill="#4285F4" stroke="none" cx="6" cy="50" r="6">
-    <animate
-      attributeName="opacity"
-      dur="1s"
-      values="0;1;0"
-      repeatCount="indefinite"
-      begin="0.1"/>    
-  </circle>
-  <circle fill="#4285F4" stroke="none" cx="26" cy="50" r="6">
-    <animate
-      attributeName="opacity"
-      dur="1s"
-      values="0;1;0"
-      repeatCount="indefinite" 
-      begin="0.2"/>       
-  </circle>
-  <circle fill="#4285F4" stroke="none" cx="46" cy="50" r="6">
-    <animate
-      attributeName="opacity"
-      dur="1s"
-      values="0;1;0"
-      repeatCount="indefinite" 
-      begin="0.3"/>     
-  </circle>
-</svg><p id="accountname"  class="accountname"></p><p id="accountnumber"class="accuntnumber"></p></div>
-            </div> 
-       </div>       
- 
-            <div class="wsContent">
-
-                </div>
-              <div class="cont2">
-<!-- 
-                 <button  id="stackOpener">Withdraw to mpesa</button>
-                 <button  id="registration">Withdraw to bank</button> -->
-                 <button id="withdraw"  id="stackOpener">Courses</button>
-                 <button id="withdraw"  id="stackOpener">Fees</button>
-                 <button id="withdraw"  id="stackOpener">Transcripts</button>
-                 <button id="withdraw"  id="stackOpener">Class schedule</button>
-                 <button id="withdraw"  id="stackOpener">Assignments</button>
-                </div>
-                <!--add dynamic html data from js here-->
+<div class="logoholder">
+    <div class="lg1"></div>
+    <div class="lg2"></div>
+    <div class="lg3"></div>
+</div>
+    <h1 style="color:white">northfast account</h1>
+    <div class="wsHeader" id='wsHeader'>
+            <div class="accountsettings" id="accountsettings"> 
                 
-            <div>
-            
-       
-</div>
-   
-
-
-
-<!--display all data-->
-<div class="wsStack" id="wsStack">
-    <div class="stackHeader">
-        <button onclick="back"><img src = "res/backArrowSvg.svg" alt="back"/></button>
+             <div class="profileimageHolder" id="profileimageHolder"><img title="profile" src="./res/user.png" alt="profile" srcset=""></div>
+             <div class="accountnameHolder">   
+                    <!--consent screen-->
+<div class="consentScreen-default" id="consentScreen">
+    <div class="consentContent" id="consentContent">
+    <p>You are about to delete a connection</p>
     </div>
-<div id="wsBodyStackInnerContent">
-   
+   <div class="consentControls" id="consentControls">
+    <button type="button" class="consentAccept" id="consentAccept">Accept</button>
+    <button type="button" class="consentReject" id="consentReject">Reject</button>
 </div>
+</div>
+<!--end of consent screen-->
+                <div class="wsContent">
+              <h3 class="titleS">Sessions</h3>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo">
+                    <h5>gari.co.ke</h5>
+                </div>
+                <div class="controls" id="controls">
+                    <button type="button"  class="delete"  id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo">
+                    <h5>premier</h5>
+                </div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete"  id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">remove access</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+              <div class="appholder" id="appholder">
+                <div class="appnameorlogo" id="appnameorlogo"><h5>northfast drive</h5></div>
+                <div class="controls" id="controls">
+                    <button type="button" class="delete" id="delete">Delete</button>
+                </div>
+              </div>
+           </div>
+        </div>
+            </div> 
+    </div>
+    
+ 
+    <div class="wsFooter" id="wsFooter"></div>
+    </div>       
 
+</div>     
+<!--end of main window-->          
 </div>
+    <!--bottom sheet -->
+    <div id="bottomSheet" class="bottom-sheet">
+        <div class="bar"></div>
+        <div class="content" id="content"></div>
+    </div>
+<!--end of bottomsheet-->  
+
+<script type="module" src="./profileman/index.js"></script>
 <script src="webStacks.js" type="module"></script>
-<script src="././sections/accounts/api.js" type="module"></script>
-<script src="././sections/transactions/api.js" type="module"></script>
+<!-- <script src="././sections/accounts/api.js" type="module"></script> -->
 <!---->
-
 </body>
 </html>
