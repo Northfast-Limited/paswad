@@ -1,35 +1,6 @@
 <?php
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
  include_once  'config.php';  
  //no update  
- //env loads
- function loadEnv($filePath) {
-     if (!file_exists($filePath)) {
-         throw new Exception("Environment file not found: $filePath");
-     }
- 
-     $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     foreach ($lines as $line) {
-         if (strpos($line, '#') === 0) {
-             continue; // Skip comments
-         }
-         list($key, $value) = explode('=', $line, 2) + [NULL, NULL];
-         if ($key && $value) {
-             putenv("$key=$value");
-             $_ENV[$key] = $value;
-             $_SERVER[$key] = $value; // For compatibility with other systems
-         }
-     }
- }
- 
- // Load the .env file
- loadEnv('/var/www/html/auth/onepass/v1.0/.env');
-
-
- 
- //
     class class_be_db_account_fetch{
       private $class_callback;
       private $password;
@@ -141,7 +112,7 @@ error_reporting(E_ALL);
             $exp = time()+10;
             $timestamp = time();
             $header = [
-             'typ' => "internal-auth",
+             'typ' => "auth",
              "alg" => "HS256",
              'status' => $client_status,
              'exp' => $exp,
@@ -151,11 +122,11 @@ error_reporting(E_ALL);
             $payload = [
                 'client-id' => $client_id,
                 'client-name' => $client_name,
-                'token-role' => 'admin'//full feature
+                'token-role' => 'admin'
             ];
             $base64header =  str_replace(['+', '/', '='], ['', '', ''],base64_encode(json_encode($header)));
             $base64payload =  str_replace(['+', '/', '='], ['', '', ''],base64_encode(json_encode($payload)));
-            $signature = hash_hmac('sha256', $base64header . "." . $base64payload,getenv('JWT_SECRET'), true);
+            $signature = hash_hmac('sha256', $base64header . "." . $base64payload, '**^$%#$@#FEWFewhgr3274y32gi2', true);
             $base64signature = str_replace(['+', '/', '='], ['', '', ''], base64_encode($signature));
             $token =  "$base64header.$base64payload.$base64signature";
 
@@ -168,44 +139,9 @@ error_reporting(E_ALL);
             ];
             //should redirect to dashboard or provide menu according to the client type
           $db_response = json_encode(array('response'=>array('responseCode'=>$api_endpoint_status_code,'payload'=>$payload)));
-          try {
-                      //send api feedback
-                      echo $db_response;
-                            // Check if headers are already sent
-
-          //   if (headers_sent($file, $line)) {
-          //     error_log("Headers already sent in $file on line $line");
-          //     throw new Exception("Headers already sent");
-          // }
-
-            // Cookie parameters
-            $cookieName = 'sess';
-            $cookieValue = $token;
-            $cookieExpire = time() + 86400; // expires in 24 hour
-            $cookiePath = '/';
-            $cookieDomain = ''; // change to your domain
-            $secure = false; // only transmit cookie over HTTPS
-            $httpOnly = true; // prevent JavaScript access to the cookie
-            $sameSite = 'Strict'; // prevents the cookie from being sent with cross-site requests
-            // Set the cookie
-            // setcookie("test_cookie", "test", time() + 3600, '/');
-
-            setcookie($cookieName, $cookieValue, [
-                'expires' => $cookieExpire,
-                'path' => $cookiePath,
-                'domain' => $cookieDomain,
-                'secure' => $secure,
-                'httponly' => $httpOnly,
-                'samesite' => $sameSite
-            ]);
-  
-        } catch (Exception $e) {
-            // Handle errors
-            error_log('JWT encoding error: ' . $e->getMessage());
-            // Respond with an appropriate error message to the client
-            http_response_code(500);
-            echo 'An error occurred while setting the JWT cookie.';
+      
+          echo $db_response;
         }
-        }
+
     }
  
