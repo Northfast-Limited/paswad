@@ -73,7 +73,7 @@ class class_be_db_envylod{
                 }else {
                   $api_endpoint_status_code = 0;//true 9 - jwt generated 
                   $payload = [
-                    'message' => 'Wrong password try again',
+                    'message' => 'account not found',
                     'timestamp' => time(),
                     ];
                   $db_response = json_encode(array('response'=>array('responseCode'=>$api_endpoint_status_code,'payload'=>$payload)));

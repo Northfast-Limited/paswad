@@ -8,14 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonData = file_get_contents('php://input');
     $data = json_decode($jsonData, true);
      process_request($data,function($payload,$response){
-        if($response != null){
+        //check for response code
+        if($response !=0){
             getaccountinfo($response,function($response){
                 http_response_code(200);
                 echo $response;
              });
         }else{
             http_response_code(400);
-            $response_code = 5;
+            $response_code = 0;
             $payload = [
              'message' => "invalid body",
              'timestamp' => time()
@@ -38,13 +39,29 @@ function base64UrlDecode($data) {
     $base64 = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
     return base64_decode($base64);
 }
+//validate jwt first
+function isValidJWT($token) {
+    $parts = explode('.', $token);
+    return count($parts) === 3;
+}
 function decodeJWT($token) {
-    list($header, $payload) = explode('.', $token);
+    if (!isValidJWT($token)) {
+        http_response_code(400);
+        $payload = 'invalid body';
+        echo json_encode($payload);
+        exit;
+    }
+
+    list($header, $payload, $signature) = explode('.', $token);
+
+    // Decode base64 URL-encoded strings
     $header = base64UrlDecode($header);
     $payload = base64UrlDecode($payload);
+
     return [
         'header' => json_decode($header, true),
-        'payload' => json_decode($payload, true)
+        'payload' => json_decode($payload, true),
+        'signature' => $signature // Optionally include the signature
     ];
 }
 function process_request($data,$callback) {
@@ -76,11 +93,12 @@ if ($data !== null ) {
                echo json_encode(array("invalid callback function" => "404/callback not found" ));
             }
     } else {
+      
         http_response_code(400);
         $payload = 'invalid body';
-        $positive_response_code = 0;
+        $response_code = 0;
         if(is_callable($callback)) {
-            call_user_func($callback,$payload,$positive_response_code);
+            call_user_func($callback,$payload,$response_code);
             }else {
                http_response_code(404);
                echo json_encode(array("invalid callback function" => "404/callback not found" ));
@@ -88,10 +106,10 @@ if ($data !== null ) {
     } 
 }else {
     http_response_code(400);
-    $payload = 'null data';
-    $positive_response_code = 222;
+    $payload = 'invalid body';
+    $response_code = 0;
     if(is_callable($callback)) {
-        call_user_func($callback,$payload,$positive_response_code);
+        call_user_func($callback,$payload,$response_code);
         }else {
            http_response_code(404);
            echo json_encode(array("invalid callback function" => "404/callback not found" ));
