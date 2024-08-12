@@ -1,87 +1,115 @@
 <?php
-//use authenication directory to do internal user and account authenication
-// include_once  'config.php';  
-// //no update  
-// //env loads
-// function loadEnv($filePath) {
-//     if (!file_exists($filePath)) {
-//         throw new Exception("Environment file not found: $filePath");
-//     }
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-//     $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-//     foreach ($lines as $line) {
-//         if (strpos($line, '#') === 0) {
-//             continue; // Skip comments
-//         }
-//         list($key, $value) = explode('=', $line, 2) + [NULL, NULL];
-//         if ($key && $value) {
-//             putenv("$key=$value");
-//             $_ENV[$key] = $value;
-//             $_SERVER[$key] = $value; // For compatibility with other systems
-//         }
-//     }
-// }
+function check_exp($payload) {
+    $currentTime = time();
+    if ($payload['exp'] < $currentTime) {
+        // If the token has expired, delete the cookie and redirect to the login page
+        //no need for redirect
+        setcookie('token', '', time() - 3600, '/'); // Expire the cookie
+        unset($_COOKIE['token']);
+        exit;
+    }else{
 
-// // Load the .env file
-// loadEnv('/var/www/html/auth/onepass/v1.0/.env');
-// $jwtSecret = getenv('JWT_SECRET');
-// echo $jwtSecret;
+    }
+}
+class class_dash_envylod {
+    function loadEnv($filePath) {
+        if (!file_exists($filePath)) {
+            throw new Exception("Environment file not found: $filePath");
+        }
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#') {
+                continue;
+            }
+            $parts = explode('=', $line, 2);
+            if (count($parts) !== 2) {
+                continue;
+            }
+            $key = trim($parts[0]);
+            $value = trim($parts[1], "\"'");
+            if ($key === '' || $value === '') {
+                continue; 
+            }
+            putenv("$key=$value");
+            $_ENV[$key] = $value;
+            $_SERVER[$key] = $value;
+        }
+    }
+}
+
 function base64UrlDecode($data) {
-    // Replace URL-safe Base64 characters with standard Base64 characters
     $base64 = str_replace(['-', '_'], ['+', '/'], $data);
-    
-    // Add padding if necessary
     $base64 = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
-    
-    // Decode the Base64 string
     return base64_decode($base64);
 }
 
-function decodeJWT($jwt) {
-    // Split the JWT into its components
+function base64UrlEncode($data) {
+    $base64 = base64_encode($data);
+    $base64 = str_replace(['+', '/'], ['-', '_'], $base64);
+    return rtrim($base64, '=');
+}
+
+function verifyJWTSignature($jwt, $secretKey) {
     list($header, $payload, $signature) = explode('.', $jwt);
-    
-    // Decode the Base64Url encoded parts
+    $base64header = base64UrlEncode(json_encode(base64UrlDecode($header)));
+    $base64payload = base64UrlEncode(json_encode(base64UrlDecode($payload)));
+    $data = $header . '.' . $payload;
+    $expectedSignature = base64UrlEncode(hash_hmac('sha256', $data, $secretKey, true));
+    return hash_equals($expectedSignature, $signature);
+}
+
+function decodeJWT($jwt) {
+    list($header, $payload) = explode('.', $jwt);
     $header = base64UrlDecode($header);
     $payload = base64UrlDecode($payload);
-    // Decode JSON into PHP arrays/objects
-    $headerData = json_decode($header, true);
-    $payloadData = json_decode($payload, true);
     return [
-        'header' => $headerData,
-        'payload' => $payloadData,
-        'signature' => $signature
+        'header' => json_decode($header, true),
+        'payload' => json_decode($payload, true)
     ];
 }
 
-// Example usage
+//jwt verification
 try {
-    // Retrieve the JWT from the cookie
-    if (isset($_COOKIE['session_token'])) {
-        $jwt = $_COOKIE['session_token'];
-        // Decode the JWT
-        $decoded = decodeJWT($jwt);
+    if (isset($_COOKIE['token'])) {
+        $jwt = $_COOKIE['token'];
+        $class_dash_envylod = new class_dash_envylod();
+        $filePath = '/var/www/html/auth/onepass/v1.0/.env';
 
-        // Access the decoded data
-        $header = $decoded['header'];
-        $payload = $decoded['payload'];
-        // Example: Access user ID and username from the payload
-        $userId = $payload['data']['userId'] ?? 'Unknown';
-        $userName = $payload['data']['userName'] ?? 'Unknown';
+        try {
+            $class_dash_envylod->loadEnv($filePath);
+            $secretKey = trim(getenv('JWT_SECRET'));
+            if ($secretKey === false) {
+                throw new Exception("JWT_SECRET not set in environment variables");
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            exit;
+        }
+
+        if (verifyJWTSignature($jwt, $secretKey)) {
+            $decoded = decodeJWT($jwt);
+            $header = $decoded['header'];
+            $payload = $decoded['payload'];
+            check_exp($header);
+        } else {
+            header('Location: http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/webstacks/onepass/'); // Redirect to login page
+            exit();
+        }
     } else {
+        header('Location: http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/webstacks/onepass/'); // Redirect to login page
+        exit();
     }
 } catch (Exception $e) {
-    // Handle errors
     error_log('Error decoding JWT: ' . $e->getMessage());
-    // Respond with an appropriate error message to the client
     http_response_code(400);
-    echo 'An error occurred while decoding the JWT cookie.';
+    echo 'An error occurred while verifying the JWT.';
 }
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,7 +132,7 @@ try {
     <div class="lg2"></div>
     <div class="lg3"></div>
 </div>
-    <h1 style="color:white">northfast onepass</h1>
+    <h1 style="color:white">paswad</h1>
     <div class="wsHeader" id='wsHeader'>
             <div class="accountsettings" id="accountsettings"> 
                 

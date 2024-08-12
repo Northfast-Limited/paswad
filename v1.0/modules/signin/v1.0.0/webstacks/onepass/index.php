@@ -1,3 +1,117 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+//verify if token cookie exists, verify signature and redirect to dashboard
+function check_exp($payload) {
+    $currentTime = time();
+    if ($payload['exp'] < $currentTime) {
+        // If the token has expired, delete the cookie and redirect to the login page
+        setcookie('token', '', time() - 3600, '/'); // Expire the cookie
+        unset($_COOKIE['token']);
+        header("Location: http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/webstacks/onepass/"); 
+        exit;
+    }else{
+    header("Location: http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/");
+    exit();
+    }
+}
+class class_dash_envylod{
+    function loadEnv($filePath) {
+        if (!file_exists($filePath)) {
+            throw new Exception("Environment file not found: $filePath");
+        }
+
+        $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#') {
+                continue; // Skip empty lines and comments
+            }
+
+            $parts = explode('=', $line, 2);
+            if (count($parts) !== 2) {
+                continue; // Skip lines that don't contain exactly one '='
+            }
+
+            $key = trim($parts[0]);
+            $value = trim($parts[1], "\"'"); // Remove surrounding quotes if any
+
+            if ($key === '' || $value === '') {
+                continue; // Skip if either key or value is empty
+            }
+
+            putenv("$key=$value");
+            $_ENV[$key] = $value;
+            $_SERVER[$key] = $value;
+        }
+    }
+}
+
+function base64UrlDecode($data) {
+    $base64 = str_replace(['-', '_'], ['+', '/'], $data);
+    $base64 = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
+    return base64_decode($base64);
+}
+
+function base64UrlEncode($data) {
+    $base64 = base64_encode($data);
+    $base64 = str_replace(['+', '/'], ['-', '_'], $base64);
+    return rtrim($base64, '=');
+}
+
+function verifyJWTSignature($jwt, $secretKey) {
+    // Split the JWT into its components
+    list($header, $payload, $signature) = explode('.', $jwt);
+
+    // Create a hash of the header and payload using the secret key
+    $data = $header . '.' . $payload;
+    $expectedSignature = base64UrlEncode(hash_hmac('sha256', $data, $secretKey, true));
+
+    // Compare the expected signature with the actual signature
+    return hash_equals($expectedSignature, $signature);
+}
+
+function decodeJWT($jwt) {
+    list($header, $payload) = explode('.', $jwt);
+    $header = base64UrlDecode($header);
+    $payload = base64UrlDecode($payload);
+    return [
+        'header' => json_decode($header, true),
+        'payload' => json_decode($payload, true)
+    ];
+}
+
+//jwt verification
+try {
+    if (isset($_COOKIE['token'])) {
+        $jwt = $_COOKIE['token'];
+        //load env variable
+        $class_dash_envylod = new class_dash_envylod();
+        $filePath = '/var/www/html/auth/onepass/v1.0/.env';
+        $class_dash_envylod->loadEnv($filePath);
+        $secretKey = trim(getenv('JWT_SECRET'));
+        if ($secretKey === false) {
+            throw new Exception("JWT_SECRET not set in environment variables");
+        }
+        if (verifyJWTSignature($jwt, $secretKey)) {
+            $decoded = decodeJWT($jwt);
+            $header = $decoded['header'];
+            $payload = $decoded['payload'];
+            check_exp($decoded['header']);
+            exit;
+        } else {
+         
+        }
+    } else {
+    }
+} catch (Exception $e) {
+    error_log('Error decoding JWT: ' . $e->getMessage());
+    http_response_code(400);
+    echo 'An error occurred while verifying the JWT.';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <!--northfast webstacks-->

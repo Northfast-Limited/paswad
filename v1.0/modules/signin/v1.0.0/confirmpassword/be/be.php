@@ -1,23 +1,13 @@
 <?php
 include_once "./config/dbconfig/db.php";
-//check if account exists
 class class_be_check_account {
-    //received jwt payload
-    //password verify function
-
                 function func_be_check_account($payload,$callback){
                     $class_db_account_fetch = new class_be_db_account_fetch();
                     $statement = 'SELECT * FROM  accounts  WHERE tempauthcode = :tempauthcode';
-                    //difference is heare
-                    //explode and decode the payload
                     $tempauthcode = $payload['tempauthcode'];
                     $params  = array('tempauthcode' => $tempauthcode);
-                    //get callback from the connection
                     $class_db_account_fetch -> func_be_db_account_fetch($statement,$params,$payload,$callback);
                 }
-                //time check
-
-                // timecheck pass -> 2fa -> generate token 
                 function generate_login_token($status,$db_response,$callback){
                     $decoded_db_response = json_decode($db_response);
                     $url_id = $decoded_db_response[0]->signatureid;
@@ -29,7 +19,6 @@ class class_be_check_account {
                      'status' => $status,
                      'exp' => $exp
                     ];
-    
                     $payload = [
                      'urlid' =>$url_id,
                     ];
@@ -41,9 +30,8 @@ class class_be_check_account {
                     if(is_callable($callback)) {                                          
                         call_user_func($callback,$url_token);
                         }else {
-                           http_response_code(404);//not found
+                           http_response_code(404);
                            echo json_encode(array("invalid callback" => "callback func failure" ));
-                        }
-                        
+                        }      
                 }
     }

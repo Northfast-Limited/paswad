@@ -5,30 +5,38 @@ error_reporting(E_ALL);
  include_once  'config.php';  
  //no update  
  //env loads
- function loadEnv($filePath) {
-     if (!file_exists($filePath)) {
-         throw new Exception("Environment file not found: $filePath");
-     }
- 
-     $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-     foreach ($lines as $line) {
-         if (strpos($line, '#') === 0) {
-             continue; // Skip comments
-         }
-         list($key, $value) = explode('=', $line, 2) + [NULL, NULL];
-         if ($key && $value) {
-             putenv("$key=$value");
-             $_ENV[$key] = $value;
-             $_SERVER[$key] = $value; // For compatibility with other systems
-         }
-     }
- }
- 
- // Load the .env file
- loadEnv('/var/www/html/auth/onepass/v1.0/.env');
-
-
- 
+// Function to load environment variables from a .env file
+class class_be_db_envylod{
+  function loadEnv($filePath) {
+    if (!file_exists($filePath)) {
+        throw new Exception("Environment file not found: $filePath");
+    }
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') {
+            continue; // Skip empty lines and comments
+        }
+  
+        $parts = explode('=', $line, 2);
+        if (count($parts) !== 2) {
+            continue; // Skip lines that don't contain exactly one '='
+        }
+  
+        $key = trim($parts[0]);
+        $value = trim($parts[1], "\"'"); // Remove surrounding quotes if any
+  
+        if ($key === '' || $value === '') {
+            continue; // Skip if either key or value is empty
+        }
+  
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+  }
+  
+}
  //
     class class_be_db_account_fetch{
       private $class_callback;
@@ -77,9 +85,6 @@ error_reporting(E_ALL);
                         }
                 }      
         }
-//syntax of my functions
-//callback5
-//explode tempauth code
         function func_be_db_time_password_check($payload) {
           $hashedpassword = $payload['hashedpassword'];
           $tempauthcode = $payload['tempauthcode']; 
@@ -88,7 +93,6 @@ error_reporting(E_ALL);
           $wanted_time = $explode_tempeuthcode[1];
           //current time 
           $current_timestamp = time();
-          
          if(password_verify($this->password,$hashedpassword) && ($current_timestamp - $wanted_time)<60){
           //call jwt token generator for dashboard
           $payload = [
@@ -135,61 +139,73 @@ error_reporting(E_ALL);
         //requester is always a client, either system or thirdparty on behalf of the end user, if it is system
         // the default redirect uri is the dashboard of authenicator 
         function func_be_db_dashboard_jwt_generator($payload){
+          //get env variables
+          $class_be_db_envylod = new class_be_db_envylod();
+                // Usage
+  $filePath ='/var/www/html/auth/onepass/v1.0/.env';
+  try {
+    $class_be_db_envylod->loadEnv($filePath);
+    $jwtSecret = trim(getenv('JWT_SECRET'));
+    if ($jwtSecret === false) {
+        throw new Exception("JWT_SECRET not set in environment variables");
+    }
+  } catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+    exit;
+  }
+          //more parameters should be addedd
+          //ip check verification and 2fa incase session token from diffrent ip or browser
+          //
             $client_id = "0000";
             $client_name = "system";
             $client_status="active";
-            $exp = time()+10;
+            $exp = time()+3600;
             $timestamp = time();
-            $header = [
-             'typ' => "internal-auth",
+            $jwt_header = [
+             'typ' => "internal-auth'/dashboard",
              "alg" => "HS256",
+             "path" => "onlyDashboard",
              'status' => $client_status,
+             'userId' => $payload['email'],
              'exp' => $exp,
              'timestamp' => $timestamp,
             ];
     
-            $payload = [
+            $jwt_payload = [
                 'client-id' => $client_id,
                 'client-name' => $client_name,
-                'token-role' => 'admin'//full feature
+                'token-role' => 'admin'
             ];
-            $base64header =  str_replace(['+', '/', '='], ['', '', ''],base64_encode(json_encode($header)));
-            $base64payload =  str_replace(['+', '/', '='], ['', '', ''],base64_encode(json_encode($payload)));
-            $signature = hash_hmac('sha256', $base64header . "." . $base64payload,getenv('JWT_SECRET'), true);
-            $base64signature = str_replace(['+', '/', '='], ['', '', ''], base64_encode($signature));
-            $token =  "$base64header.$base64payload.$base64signature";
-
-          //generate dashboard token and redirect to dashboard//dynamic redirect url
+$base64header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(json_encode($jwt_header)));
+$base64payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(json_encode($jwt_payload)));
+$signature = hash_hmac('sha256', $base64header . "." . $base64payload, $jwtSecret, true);
+$base64signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+$token = "$base64header.$base64payload.$base64signature";
           $api_endpoint_status_code = 11;//true 9 - jwt generated 
-          $payload = [
+          $response_payload = [
             'message' => 'success',
-            'redirect' => "http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/?jwt=$token",
+            'redirect' => "http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/?$token",
             'timestamp' => time(),
             ];
             //should redirect to dashboard or provide menu according to the client type
-          $db_response = json_encode(array('response'=>array('responseCode'=>$api_endpoint_status_code,'payload'=>$payload)));
+          $db_response = json_encode(array('response'=>array('responseCode'=>$api_endpoint_status_code,'payload'=>$response_payload)));
           try {
-                      //send api feedback
                       echo $db_response;
                             // Check if headers are already sent
-
-          //   if (headers_sent($file, $line)) {
-          //     error_log("Headers already sent in $file on line $line");
-          //     throw new Exception("Headers already sent");
-          // }
+            if (headers_sent($file, $line)) {
+              error_log("Headers already sent in $file on line $line");
+              throw new Exception("Headers already sent");
+          }
 
             // Cookie parameters
-            $cookieName = 'sess';
+            $cookieName = 'token';
             $cookieValue = $token;
-            $cookieExpire = time() + 86400; // expires in 24 hour
-            $cookiePath = '/';
+            $cookieExpire = time()+3600; // expires in 24 hour
+            $cookiePath = '/auth';
             $cookieDomain = ''; // change to your domain
             $secure = false; // only transmit cookie over HTTPS
             $httpOnly = true; // prevent JavaScript access to the cookie
             $sameSite = 'Strict'; // prevents the cookie from being sent with cross-site requests
-            // Set the cookie
-            // setcookie("test_cookie", "test", time() + 3600, '/');
-
             setcookie($cookieName, $cookieValue, [
                 'expires' => $cookieExpire,
                 'path' => $cookiePath,
