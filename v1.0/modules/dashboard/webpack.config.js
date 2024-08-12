@@ -12,7 +12,7 @@ const config = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
-        publicPath: '../', // Ensure publicPath is correct
+        publicPath: '/auth/onepass/v1.0/modules/dashboard/',
 
     },
     devServer: {
@@ -22,7 +22,7 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: path.resolve(__dirname, 'index.html'), // Correctly point to the source HTML file
         }),
         new MiniCssExtractPlugin(),
     ],

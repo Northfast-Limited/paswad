@@ -2,13 +2,15 @@ import axios from 'axios';
 
 function fetchUserInfo() {
   // Create an axios instance with credentials option
+  //get account info and display data
   const instance = axios.create({
     withCredentials: true
   });
 
   // Make the POST request
+  //get data from request
   instance.post('http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/api/internal/getaccountinfo/', {
-    token: 'eyJ0eXAiOiJpbnRlcm5hbC1hdXRoJ1wvZGFzaGJvYXJkIiwiYWxnIjoiSFMyNTYiLCJwYXRoIjoib25seURhc2hib2FyZCIsInN0YXR1cyI6ImFjdGl2ZSIsInVzZXJJZCI6Im11c2xpaGFiZGlrZXJAZ21haWwuY29tIiwiZXhwIjoxNzIzNDgxNDkzLCJ0aW1lc3RhbXAiOjE3MjM0Nzc4OTN9.eyJjbGllbnQtaWQiOiIwMDAwIiwiY2xpZW50LW5hbWUiOiJzeXN0ZW0iLCJ0b2tlbi1yb2xlIjoiYWRtaW4ifQ.DpXmQqULOEEzZPQU_tlDsiRMAioqBLvxJR17OOhXTqY'
+    tokenn: 'eyJ0eXAiOiJpbnRlcm5hbC1hdXRoJ1wvZGFzaGJvYXJkIiwiYWxnIjoiSFMyNTYiLCJwYXRoIjoib25seURhc2hib2FyZCIsInN0YXR1cyI6ImFjdGl2ZSIsInVzZXJJZCI6Im11c2xpaGFiZGlrZXJAZ21haWwuY29tIiwiZXhwIjoxNzIzNDgxNDkzLCJ0aW1lc3RhbXAiOjE3MjM0Nzc4OTN9.eyJjbGllbnQtaWQiOiIwMDAwIiwiY2xpZW50LW5hbWUiOiJzeXN0ZW0iLCJ0b2tlbi1yb2xlIjoiYWRtaW4ifQ.DpXmQqULOEEzZPQU_tlDsiRMAioqBLvxJR17OOhXTqY'
   }, {
     headers: {
       'Content-Type': 'application/json'
