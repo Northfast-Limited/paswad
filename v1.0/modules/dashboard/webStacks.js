@@ -1,38 +1,58 @@
 import axios from 'axios';
-
+console.log('newcalled');
 function fetchUserInfo() {
   // Create an axios instance with credentials option
-  //get account info and display data
   const instance = axios.create({
-    withCredentials: true
+    withCredentials: true // Ensures cookies are sent with the request
   });
 
-  // Make the POST request
-  //get data from request
-  instance.post('http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/api/internal/getaccountinfo/', {
-    tokenn: 'eyJ0eXAiOiJpbnRlcm5hbC1hdXRoJ1wvZGFzaGJvYXJkIiwiYWxnIjoiSFMyNTYiLCJwYXRoIjoib25seURhc2hib2FyZCIsInN0YXR1cyI6ImFjdGl2ZSIsInVzZXJJZCI6Im11c2xpaGFiZGlrZXJAZ21haWwuY29tIiwiZXhwIjoxNzIzNDgxNDkzLCJ0aW1lc3RhbXAiOjE3MjM0Nzc4OTN9.eyJjbGllbnQtaWQiOiIwMDAwIiwiY2xpZW50LW5hbWUiOiJzeXN0ZW0iLCJ0b2tlbi1yb2xlIjoiYWRtaW4ifQ.DpXmQqULOEEzZPQU_tlDsiRMAioqBLvxJR17OOhXTqY'
-  }, {
+  // Axios interceptor for handling responses
+  instance.interceptors.response.use(
+    response => {
+      // If the response is successful, return the response data
+      return response;
+    },
+    error => {
+      // Handle error responses
+      if (error.response && error.response.status === 401) {
+        // If the status code is 401 (Unauthorized), redirect to login page
+        window.location.href = 'http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/webstacks/onepass/';
+      } else {
+        // For other errors, you can log or handle them as needed
+        console.error('Error:', error.response ? error.response.data : error.message);
+      }
+      // Optionally, return a rejected promise to propagate the error
+      return Promise.reject(error);
+    }
+  );
+
+  // Make the POST request without including the token in the body
+  instance.post('http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/api/internal/getaccountinfo/', {}, {
     headers: {
       'Content-Type': 'application/json'
     }
   })
   .then(response => {
     console.log('Data:', response.data);
-    console.log('API called successfully');
+    console.log('API called');
   })
   .catch(error => {
-    console.error('Error:', error.response ? error.response.data : error.message);
+    // Error handling is already managed by the interceptor
   });
 }
 
+// DOM Elements
 const stackOpener = document.getElementById("stackOpener");
 const registration = document.getElementById("registration");
-const wsBody = document.getElementById("wsBody"); // Ensure this element exists
+const wsBody = document.getElementById("wsBody");
 
 window.addEventListener("load", (event) => {
-  console.log("Webpage loaded");
-  wsBody.style.width = window.innerWidth + 'px';
-  wsBody.style.height = window.innerHeight + 'px';
+  console.log("msl");
+  if (wsBody) {
+    wsBody.style.width = window.innerWidth + 'px';
+    wsBody.style.height = window.innerHeight + 'px';
+  }
+  
   // Call dashboard APIs
   fetchUserInfo();
 });

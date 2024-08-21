@@ -228,8 +228,8 @@ try {
     </div>
 <!--end of bottomsheet-->  
 
-<script type="module" src="./profileman/index.js"></script>
-<script src="webStacks.js" type="module"></script>
+<!-- <script type="module" src="./profileman/index.js"></script> -->
+<!-- <script src="webStacks.js" type="module"></script> -->
 <!-- <script src="././sections/accounts/api.js" type="module"></script> -->
 <!---->
 </body>

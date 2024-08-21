@@ -14,7 +14,26 @@ function check_exp($payload) {
         unset($_COOKIE['token']);
         exit;
     }else{
-
+    //process request after token authentication
+    $jsonData = file_get_contents('php://input');
+    $data = json_decode($jsonData, true);
+     process_request($data,function($payload,$response){
+        //check for response code
+        if($response !=0){
+            getaccountinfo($response,function($response){
+                http_response_code(200);
+                echo $response;
+             });
+        }else{
+            http_response_code(400);
+            $response_code = 0;
+            $payload = [
+             'message' => "invalid body",
+             'timestamp' => time()
+            ];
+            echo json_encode(array("response"=>array('responseCode'=>$response_code ,'payload'=>$payload)));   
+             }
+     });
     }
 }
 class class_dash_envylod {
@@ -43,19 +62,16 @@ class class_dash_envylod {
         }
     }
 }
-
 function base64UrlDecode($data) {
     $base64 = str_replace(['-', '_'], ['+', '/'], $data);
     $base64 = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
     return base64_decode($base64);
 }
-
 function base64UrlEncode($data) {
     $base64 = base64_encode($data);
     $base64 = str_replace(['+', '/'], ['-', '_'], $base64);
     return rtrim($base64, '=');
 }
-
 function verifyJWTSignature($jwt, $secretKey) {
     list($header, $payload, $signature) = explode('.', $jwt);
     $base64header = base64UrlEncode(json_encode(base64UrlDecode($header)));
@@ -64,6 +80,13 @@ function verifyJWTSignature($jwt, $secretKey) {
     $expectedSignature = base64UrlEncode(hash_hmac('sha256', $data, $secretKey, true));
     return hash_equals($expectedSignature, $signature);
 }
+//server check end
+//validate jwt first
+function isValidJWT($token) {
+    $parts = explode('.', $token);
+    return count($parts) === 3;
+}
+
 //better jwt decoding function
 function decodeJWT($token) {
     if (!isValidJWT($token)) {
@@ -88,23 +111,23 @@ function decodeJWT($token) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $ip = $_SERVER['SERVER_ADDR'];
     $domain =$_SERVER['SERVER_NAME'];
-    $jsonData = file_get_contents('php://input');
     //cookie check
 // Check if the HTTP-only cookie is set
 if (isset($_COOKIE['token'])) {
-    $token = $_COOKIE['token'];
-    // Perform your operations, e.g., validating the token, querying the database, etc.
-//jwt verification
-        try {
-            $class_dash_envylod->loadEnv($filePath);
-            $secretKey = trim(getenv('JWT_SECRET'));
-            if ($secretKey === false) {
-                throw new Exception("JWT_SECRET not set in environment variables");
-            }
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage();
-            exit;
+    $jwt = $_COOKIE['token'];
+    $class_dash_envylod = new class_dash_envylod();
+    $filePath = '/var/www/html/auth/onepass/v1.0/.env';
+
+    try {
+        $class_dash_envylod->loadEnv($filePath);
+        $secretKey = trim(getenv('JWT_SECRET'));
+        if ($secretKey === false) {
+            throw new Exception("JWT_SECRET not set in environment variables");
         }
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+        exit;
+    }
 
         if (verifyJWTSignature($jwt, $secretKey)) {
             $decoded = decodeJWT($jwt);
@@ -112,42 +135,30 @@ if (isset($_COOKIE['token'])) {
             $payload = $decoded['payload'];
             check_exp($header);
         } else {
-            header('Location: http://172.31.105.163/auth/onepass/v1.0/modules/signin/v1.0.0/webstacks/onepass/'); // Redirect to login page
-            exit();
-        }
-    //end of operation 105
-    $response = [
-        'status' => 'success',
-        'message' => 'Session token received',
-        'token' => $token
-    ];
-} else {
-    //redirect to login
-    // $response = [
-    //     'status' => 'error',
-    //     'message' => 'No session token found'
-    // ];
-}
-
-    //cookie che
-    $data = json_decode($jsonData, true);
-     process_request($data,function($payload,$response){
-        //check for response code
-        if($response !=0){
-            getaccountinfo($response,function($response){
-                http_response_code(200);
-                echo $response;
-             });
-        }else{
-            http_response_code(400);
-            $response_code = 0;
+            //no redirect // redirect to be handled by axios
+            http_response_code(401);//unauthorized
+            $response_code = 401;
             $payload = [
-             'message' => "invalid body",
+             'message' => "bad token",
              'timestamp' => time()
             ];
             echo json_encode(array("response"=>array('responseCode'=>$response_code ,'payload'=>$payload)));   
+            exit();
              }
-     });
+
+    //end of operation 105
+} else {
+         //no redirect // redirect to be handled by axios
+         http_response_code(401);//unauthorized
+         $response_code = 401;
+         $payload = [
+          'message' => "bad token",
+          'timestamp' => time()
+         ];
+         echo json_encode(array("response"=>array('responseCode'=>$response_code ,'payload'=>$payload)));   
+         exit();
+}
+
 }else {
     http_response_code(400);
     $response_code = 4;
@@ -158,12 +169,6 @@ if (isset($_COOKIE['token'])) {
     echo json_encode(array("response"=>array('responseCode'=>$response_code ,'payload'=>$payload)));
 }
 
-//validate jwt first
-function isValidJWT($token) {
-    $parts = explode('.', $token);
-    return count($parts) === 3;
-}
-
 function process_request($data,$callback) {
 if ($data !== null ) {
     //request must have timestamp for help in analytics
@@ -171,9 +176,9 @@ if ($data !== null ) {
     //user verification
     //request ip verification
     //limited requested resource approval
-    if (isset($data['token'])) {
+    if (isset($data['token']) || isset($_COOKIE['token'])) {
         //initial login timestamp required
-        $token = $data['token'];
+        $token = $_COOKIE['token'];
         //decode token and extract email
         $decodedToken = decodeJWT($token);
         //extract email from token
