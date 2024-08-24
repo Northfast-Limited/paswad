@@ -127,7 +127,7 @@ body {
     flex-direction: column;
     top:0;
     background-color: transparent;
-    gap: 0cm;
+    gap: 0.1cm;
     left: 0cm;
     width: 100%;
 
@@ -253,11 +253,17 @@ justify-self: center;
 .appholder{
   display: flex;
   flex-direction: row;
-  gap: 0cm;
+  gap: 0.5cm;
   justify-content: space-between;
   align-items: center;
   height: 1cm;
   margin: 0cm;
+  background-color: transparent;
+  border-style: solid;
+  border-radius: 0.4cm;
+  border-width: thin;
+  padding: 0.1cm;
+
 }
 .accountsettings {
   position: relative;
@@ -306,9 +312,9 @@ justify-self: center;
   border-bottom-left-radius: 0.4cm;
   border-top-right-radius: 0cm;
   border-bottom-right-radius: 0cm;
-  background-color: white;
+  background-color: mistyrose;
   width: auto;
-  height: 10cm;
+  height: auto;
   padding: 0.5cm;
   flex-wrap: wrap;
   display: flex;

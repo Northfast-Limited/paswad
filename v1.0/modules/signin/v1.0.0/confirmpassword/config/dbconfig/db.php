@@ -184,7 +184,7 @@ $token = "$base64header.$base64payload.$base64signature";
           $api_endpoint_status_code = 11;//true 9 - jwt generated 
           $response_payload = [
             'message' => 'success',
-            'redirect' => "http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/?$token",
+            'redirect' => "http://172.31.105.163/auth/onepass/v1.0/modules/dashboard/dist?$token",
             'timestamp' => time(),
             ];
             //should redirect to dashboard or provide menu according to the client type
