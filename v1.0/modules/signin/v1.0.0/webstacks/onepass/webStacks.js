@@ -164,8 +164,21 @@ wsTopControlsHolder.appendChild(wsNotificationIconHolder);
       apiHandler(accountnumber);
    })
 
-   const data = "<form autocomplete='off' class='registrationForm' autocomplete='false' autocomplete='nofill' autocomplete='nofill' autocomplete='no-fill'><h3>Registration</h3><input type='email' autocomplete='off' placeholder='email' required><br><input type='password' autocomplete='off' placeholder='password' required><br><input type='password' placeholder='confirm password' autocomplete='off' required><br><input type='checkbox'><label>i agree to terms and conditions</label><br><button type='button'>Submit</button></form>"
-   document.getElementById("createAccount").addEventListener('click',()=>{
+   const data = `
+   <form autocomplete='off' class='registrationForm'>
+       <h3>Registration</h3>
+       <input type='text' name='first_name' autocomplete='off' placeholder='First Name' required><br>
+       <input type='text' name='last_name' autocomplete='off' placeholder='Last Name' required><br>
+       <input type='email' name='email' autocomplete='off' placeholder='Email' required><br>
+       <input type='password' name='password' autocomplete='off' placeholder='Password' required><br>
+       <input type='password' name='confirm_password' autocomplete='off' placeholder='Confirm Password' required><br>
+       <input type='date' name='dob' autocomplete='off' placeholder='Date of Birth' required><br>
+       <input type='checkbox' name='terms' required>
+       <label for='terms'>I agree to the terms and conditions</label><br>
+       <button type='submit'>Submit</button>
+   </form>
+   `;
+      document.getElementById("createAccount").addEventListener('click',()=>{
       bottomsheetCreateAccount(data);
    })
 }
