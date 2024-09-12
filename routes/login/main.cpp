@@ -1,41 +1,40 @@
 #include "crow_all.h"
 #include "json.hpp"
 #include <iostream>
+#include "src/wsDbConfig/wsDbConfig.h"
 
-// Define a struct for user credentials
-struct User {
-    std::string username;
-    std::string password;
-};
+// Function to verify user credentials from the database
+bool verify_credentials(wsDbConfig& dbConfig, const std::string& username, const std::string& password) {
+    try {
+        pqxx::work W(*dbConfig.getConnection());
+        std::string query = "SELECT * FROM fgg WHERE username = " + W.quote(username) + " AND password = " + W.quote(password) + ";";
+        pqxx::result R = W.exec(query);
 
-// Simulated database for user credentials as an array of structs
-User user_db[] = {
-    {"user1", "password123"},
-    {"user2", "password456"}
-};
-
-// Function to verify user credentials
-bool verify_credentials(const std::string& username, const std::string& password) {
-    for (const auto& user : user_db) {
-        if (user.username == username && user.password == password) {
+        if (!R.empty()) {
             return true;
         }
+        return false;
+    } catch (const std::exception &e) {
+        std::cerr << "Database error: " << e.what() << std::endl;
+        return false;
     }
-    return false;
 }
 
 int main() {
     crow::SimpleApp app;
 
+    // Initialize database configuration
+    wsDbConfig dbConfig("samplex", "msl", "BK221409", "127.0.0.1", 5432);
+
     // Route for authentication
-    CROW_ROUTE(app, "/login").methods("POST"_method)([](const crow::request& req) {
+    CROW_ROUTE(app, "/login").methods("POST"_method)([&dbConfig](const crow::request& req) {
         auto json_data = nlohmann::json::parse(req.body);
 
         std::string username = json_data["username"];
         std::string password = json_data["password"];
 
-        // Verify credentials
-        if (verify_credentials(username, password)) {
+        // Verify credentials using the database
+        if (verify_credentials(dbConfig, username, password)) {
             nlohmann::json response_json;
             response_json["message"] = "Login successful!";
             response_json["status"] = 200;
@@ -48,6 +47,6 @@ int main() {
         }
     });
 
-    app.port(18081).multithreaded().run();
+    app.port(18083).multithreaded().run();
     return 0;
 }
