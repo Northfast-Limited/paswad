@@ -1,5 +1,5 @@
-#include "crow_all.h"
-#include "json.hpp"
+#include "src/libs/crow_all.h"
+#include "src/libs/json.hpp"
 #include <iostream>
 #include "src/wsDbConfig/wsDbConfig.h"
 
@@ -19,7 +19,7 @@ bool verify_credentials(wsDbConfig& dbConfig, const std::string& username, const
         return false;
     }
 }
-
+//main function
 int main() {
     crow::SimpleApp app;
 
