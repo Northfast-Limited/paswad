@@ -1,24 +1,31 @@
-# Paswad
+# Paswad 🛡️🔑
 
-Paswad is a lightweight, secure authentication service designed to provide stateless authentication using JSON Web Tokens (JWTs). This project leverages modern C++ features, PostgreSQL for database management, ZeroMQ for messaging, and Nlohmann JSON for efficient JSON handling.
+Paswad is a **lightweight**, **secure authentication service** designed to provide stateless authentication using **JSON Web Tokens (JWTs)**. This project is built using modern **C++ features**, integrates **PostgreSQL** for efficient database management, and leverages **ZeroMQ** for fast, reliable messaging. **Nlohmann JSON** is used for seamless handling of JSON data.
 
-## Features
+🔗 **Live:** [Paswad](https://id.paswad.com)  
+📧 **Contact me:** [info@muslih.tech](mailto:info@muslih.tech)
 
-- **Stateless Authentication:** Utilizes JWTs for secure, token-based authentication.
-- **Efficient Messaging:** Integrates ZeroMQ for high-performance messaging.
-- **Robust Data Handling:** Employs PostgreSQL for reliable data storage.
-- **JSON Support:** Uses Nlohmann JSON for handling JSON data in a streamlined manner.
+---
 
-## Getting Started
+## Features ✨
 
-### Prerequisites
+- **🔐 Stateless Authentication:** JWTs are utilized to provide secure, token-based authentication without storing session information on the server.
+- **⚡ Efficient Messaging:** Integrated with ZeroMQ for high-performance messaging and communication between services.
+- **💾 Reliable Data Management:** PostgreSQL is employed for robust and efficient data storage.
+- **📄 JSON Support:** The project uses Nlohmann JSON to handle JSON operations smoothly and efficiently.
 
-- **C++ Compiler:** Ensure you have a modern C++ compiler that supports C++11 or higher.
-- **PostgreSQL:** Install PostgreSQL and ensure it's running.
-- **ZeroMQ:** Install the ZeroMQ library.
-- **Nlohmann JSON:** Include the Nlohmann JSON library in your project.
+## Getting Started 🚀
 
-### Installation
+### Prerequisites 🛠️
+
+Before you begin, ensure you have the following:
+
+- **C++ Compiler:** A modern C++ compiler supporting C++11 or higher (e.g., GCC, Clang).
+- **PostgreSQL:** PostgreSQL installed and running on your system.
+- **ZeroMQ:** The ZeroMQ messaging library installed.
+- **Nlohmann JSON:** Include the Nlohmann JSON library in your project dependencies.
+
+### Installation ⚙️
 
 1. **Clone the Repository**
 
