@@ -1,22 +1,31 @@
+#include <chrono> // For timestamp generation
+#include <ctime>  // For converting timestamp to string format
 #include "src/libs/crow_all.h"
 #include "src/libs/json.hpp"
 #include "src/accountCheck/index.h"
 #include <iostream>
+// Function to get current timestamp
+long long current_timestamp() {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+}
 // Function to create a JSON response
 nlohmann::json create_response(int responseCode, const std::string& message, int affectedRows, long long timestamp, const std::string& content) {
     nlohmann::json response_json;
     response_json["response"]["code"] = responseCode;
     response_json["response"]["payload"]["message"] = message;
-    response_json["response"]["payload"]["timestamp"] = timestamp;
+    response_json["response"]["payload"]["timestamp"] =  std::to_string(timestamp);
     response_json["response"]["payload"]["resource"] = content;
     return response_json;
 }
 int main() {
     crow::SimpleApp app;
     wsDbConfig dbConfig("samplex", "msl", "BK221409", "127.0.0.1", 5432);
-    std::string secretKey = "mySecretKey";
     wsLogin creds;
     CROW_ROUTE(app, "/login").methods("POST"_method, "GET"_method)([&dbConfig, &creds](const crow::request& req) {
+            long long timestamp = current_timestamp(); // Get current timestamp
+
         if (req.method == crow::HTTPMethod::Post) {
             try {
                 auto json_data = nlohmann::json::parse(req.body);
@@ -25,7 +34,6 @@ int main() {
                 int responseCode;
                 std::string message;
                 int affectedRows = 1; // Example value
-                long long timestamp = 1714952869; // Example timestamp
                 std::string content;
                 if (creds.verify_credentials(dbConfig, username, password)) {
                     responseCode = 1;
@@ -47,7 +55,7 @@ int main() {
                 return res;
             } catch (const std::exception &e) {
                 // Handle exception for invalid JSON or other errors
-                nlohmann::json response_json = create_response(0, "Invalid JSON format", 0, 0, "");
+                nlohmann::json response_json = create_response(0, "request failed", 0, 0, "");
                 crow::response res;
                 res.code = 400;
                 res.set_header("Content-Type", "application/json");
