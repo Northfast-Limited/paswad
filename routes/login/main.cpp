@@ -4,7 +4,6 @@
 #include "src/wsDbConfig/wsDbConfig.h"
 
 // Function to verify user credentials from the database
-// (Consider moving this to a different class later)
 bool verify_credentials(wsDbConfig& dbConfig, const std::string& username, const std::string& password) {
     try {
         pqxx::work W(*dbConfig.getConnection());
@@ -17,11 +16,14 @@ bool verify_credentials(wsDbConfig& dbConfig, const std::string& username, const
     }
 }
 
-// Function to create a JSON response with pretty-printing
-nlohmann::json create_response(const std::string& message, int status) {
+// Function to create a JSON response with a specific structure
+nlohmann::json create_response(int responseCode, const std::string& message, int affectedRows, long long timestamp, const std::string& content) {
     nlohmann::json response_json;
-    response_json["message"] = message;
-    response_json["status"] = status;
+    response_json["response"]["responseCode"] = responseCode;
+    response_json["response"]["payload"]["message"] = message;
+    response_json["response"]["payload"]["affectedRows"] = affectedRows;
+    response_json["response"]["payload"]["Responsetimestamp"] = timestamp;
+    response_json["response"]["payload"]["content"] = content;
     return response_json;
 }
 
@@ -33,25 +35,46 @@ int main() {
     // Route for authentication
     CROW_ROUTE(app, "/login").methods("POST"_method, "GET"_method)([&dbConfig](const crow::request& req) {
         if (req.method == crow::HTTPMethod::Post) {
-            auto json_data = nlohmann::json::parse(req.body);
-            std::string username = json_data["username"];
-            std::string password = json_data["password"];
+            try {
+                auto json_data = nlohmann::json::parse(req.body);
+                std::string username = json_data["username"];
+                std::string password = json_data["password"];
 
-            // Verify credentials using the database
-            nlohmann::json response_json;
-            if (verify_credentials(dbConfig, username, password)) {
-                response_json = create_response("Login successful!", 200);
-                // Pretty-print the JSON response with an indentation of 4 spaces
-                return crow::response(200, response_json.dump(4), "application/json");
-            } else {
-                response_json = create_response("Invalid credentials", 401);
-                // Pretty-print the JSON response with an indentation of 4 spaces
-                return crow::response(401, response_json.dump(4), "application/json");
+                int responseCode;
+                std::string message;
+                int affectedRows = 1; // Example value
+                long long timestamp = 1714952869; // Example timestamp
+                std::string content;
+
+                if (verify_credentials(dbConfig, username, password)) {
+                    responseCode = 1;
+                    message = "found";
+                    //call class to generate dashboard jwt and give api response
+                    content = "<input data-timestamp='" + std::to_string(timestamp) + "' type='password' required placeholder='password' id='password'><button onclick='pwdCheckApi()'type='button' identifiertoken='" + std::to_string(timestamp) + "'>Continue</button>";
+                } else {
+                    responseCode = 0;
+                    message = "not found";
+                    content = ""; // Empty content
+                }
+
+                nlohmann::json response_json = create_response(responseCode, message, affectedRows, timestamp, content);
+                // Create a Crow response with JSON content type
+                crow::response res(200, response_json.dump(4));
+                res.set_header("Content-Type", "application/json");
+                return res;
+            } catch (const std::exception &e) {
+                nlohmann::json response_json = create_response(0, "Invalid JSON format", 0, 0, "");
+                // Create a Crow response with JSON content type
+                crow::response res(400, response_json.dump(4));
+                res.set_header("Content-Type", "application/json");
+                return res;
             }
         } else {
-            nlohmann::json response_json = create_response("Method Not Allowed", 405);
-            // Pretty-print the JSON response with an indentation of 4 spaces
-            return crow::response(405, response_json.dump(4), "application/json");
+            nlohmann::json response_json = create_response(0, "Method Not Allowed", 0, 0, "");
+            // Create a Crow response with JSON content type
+            crow::response res(405, response_json.dump(4));
+            res.set_header("Content-Type", "application/json");
+            return res;
         }
     });
 
