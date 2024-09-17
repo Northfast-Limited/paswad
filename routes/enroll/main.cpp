@@ -26,12 +26,12 @@ int main() {
             try {
                 // Parse the JSON request body
                 auto json_data = nlohmann::json::parse(req.body);
-                std::string username = json_data["username"];
+                std::string email = json_data["email"];
                 std::string password = json_data["password"];
                 int responseCode;
                 std::string message;
                 // Attempt to enroll the user
-                if (enroll.wsEnrollUser(dbConfig, username, password)) {
+                if (enroll.wsEnrollUser(dbConfig, email, password)) {
                     responseCode = 1;
                     message = "success";
                 } else {

@@ -10,12 +10,12 @@
 class wsEnroll {
 public:
     // Insert new user credentials into the database
-    bool wsEnrollUser(wsDbConfig& dbConfig, const std::string& username, const std::string& password) {
+    bool wsEnrollUser(wsDbConfig& dbConfig, const std::string& email, const std::string& password) {
         try {
             pqxx::work W(*dbConfig.getConnection());
             // Hash the password before inserting it into the database
             std::string hashed_password = hash_password(password);
-            std::string query = "INSERT INTO fgg (username, password) VALUES (" + W.quote(username) + ", " + W.quote(hashed_password) + ");";
+            std::string query = "INSERT INTO fgg (email, password) VALUES (" + W.quote(email) + ", " + W.quote(hashed_password) + ");";
             W.exec(query);
             W.commit();
             return true;
