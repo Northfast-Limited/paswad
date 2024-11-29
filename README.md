@@ -1,4 +1,5 @@
 # Paswad 🛡️🔑
+![Northfast](https://img.shields.io/badge/Northfast-Limited-blue?style=flat-square)
 
 Paswad is a **lightweight**, **secure authentication service** designed to provide stateless authentication using **JSON Web Tokens (JWTs)**. This project is built using modern **C++ features**, integrates **PostgreSQL** for efficient database management, and leverages **ZeroMQ** for fast, reliable messaging. **Nlohmann JSON** is used for seamless handling of JSON data.
 
